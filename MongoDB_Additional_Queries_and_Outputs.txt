@@ -1,0 +1,295 @@
+ADDITIONAL MONGODB QUERIES WITH EXPECTED OUTPUT
+================================================
+
+These are EXTRA practice queries based on the same sample records and
+expected-output style as the provided practical sheet and the previous TXT
+file. Run them after completing the original practical.
+
+IMPORTANT DATA NOTE
+-------------------
+The employee collection uses the eight employee records shown in the
+provided Employee Directory expected output.
+
+The student collection uses the same five-record example from the previous
+TXT file. Bhavna (rollNo 102) and Meera (rollNo 104) were illustrative
+records because their details were not visible in the supplied page.
+
+
+SCENARIO 1.1 – STUDENT RECORDS (EXTRA QUERIES)
+Database: college
+Collection: students
+===============================================
+
+STEP 1 – Find students who scored more than 75 marks using $gt
+
+db.students.find({ marks: { $gt: 75 } })
+
+EXPECTED OUTPUT:
+[
+    { rollNo: 101, name: "Arun",    dept: "CSE", marks: 78, city: "Chennai" },
+    { rollNo: 102, name: "Bhavna",  dept: "ECE", marks: 85, city: "Jaipur" },
+    { rollNo: 105, name: "Suresh",  dept: "CSE", marks: 91, city: "Trichy" }
+]
+
+
+STEP 2 – Find students who scored less than or equal to 70 using $lte
+
+db.students.find({ marks: { $lte: 70 } })
+
+EXPECTED OUTPUT:
+[
+    { rollNo: 103, name: "Karthik", dept: "CSE", marks: 68, city: "Chennai" }
+]
+
+
+STEP 3 – Find students belonging to CSE or ECE using $in
+
+db.students.find({ dept: { $in: ["CSE", "ECE"] } })
+
+EXPECTED OUTPUT:
+[
+    { rollNo: 101, name: "Arun",    dept: "CSE", marks: 78, city: "Chennai" },
+    { rollNo: 102, name: "Bhavna",  dept: "ECE", marks: 85, city: "Jaipur" },
+    { rollNo: 103, name: "Karthik", dept: "CSE", marks: 68, city: "Chennai" },
+    { rollNo: 105, name: "Suresh",  dept: "CSE", marks: 91, city: "Trichy" }
+]
+
+
+STEP 4 – Find students who are not from Chennai using $ne
+
+db.students.find({ city: { $ne: "Chennai" } })
+
+EXPECTED OUTPUT:
+[
+    { rollNo: 102, name: "Bhavna", dept: "ECE", marks: 85, city: "Jaipur" },
+    { rollNo: 105, name: "Suresh", dept: "CSE", marks: 91, city: "Trichy" }
+]
+
+
+STEP 5 – Find students whose names start with S using $regex
+
+db.students.find({ name: { $regex: "^S" } })
+
+EXPECTED OUTPUT:
+[
+    { rollNo: 105, name: "Suresh", dept: "CSE", marks: 91, city: "Trichy" }
+]
+
+
+STEP 6 – Display only name and marks, sorted by marks in descending order
+
+db.students.find(
+    {},
+    { _id: 0, name: 1, marks: 1 }
+).sort({ marks: -1 })
+
+EXPECTED OUTPUT:
+[
+    { name: "Suresh",  marks: 91 },
+    { name: "Bhavna",  marks: 85 },
+    { name: "Arun",    marks: 78 },
+    { name: "Karthik", marks: 68 }
+]
+
+
+STEP 7 – Display the two students with the highest marks using sort() and limit()
+
+db.students.find(
+    {},
+    { _id: 0, name: 1, marks: 1 }
+).sort({ marks: -1 }).limit(2)
+
+EXPECTED OUTPUT:
+[
+    { name: "Suresh", marks: 91 },
+    { name: "Bhavna", marks: 85 }
+]
+
+
+STEP 8 – Count the number of CSE students
+
+db.students.countDocuments({ dept: "CSE" })
+
+EXPECTED OUTPUT:
+3
+
+
+
+SCENARIO 1.2 – EMPLOYEE DIRECTORY (EXTRA QUERIES)
+Database: hr
+Collection: employees
+==================================================
+
+STEP 1 – Find employees earning less than 50000 using $lt
+
+db.employees.find({ salary: { $lt: 50000 } })
+
+EXPECTED OUTPUT:
+[
+    { empId: 1, name: "Anita", dept: "HR",    salary: 42000, city: "Chennai" },
+    { empId: 6, name: "Farah", dept: "HR",    salary: 45000, city: "Delhi" },
+    { empId: 8, name: "Hema",  dept: "Sales", salary: 38000, city: "Hyderabad" }
+]
+
+
+STEP 2 – Find employees earning at least 60000 using $gte
+
+db.employees.find({ salary: { $gte: 60000 } })
+
+EXPECTED OUTPUT:
+[
+    { empId: 2, name: "Bala",   dept: "IT",      salary: 65000, city: "Bengaluru" },
+    { empId: 5, name: "Elan",   dept: "IT",      salary: 72000, city: "Chennai" },
+    { empId: 7, name: "Gopal",  dept: "Finance", salary: 61000, city: "Chennai" }
+]
+
+
+STEP 3 – Find employees who work in HR using equality condition
+
+db.employees.find({ dept: "HR" })
+
+EXPECTED OUTPUT:
+[
+    { empId: 1, name: "Anita", dept: "HR", salary: 42000, city: "Chennai" },
+    { empId: 6, name: "Farah", dept: "HR", salary: 45000, city: "Delhi" }
+]
+
+
+STEP 4 – Find employees who are from Chennai and earn more than 60000
+         using $and
+
+db.employees.find({
+    $and: [
+        { city: "Chennai" },
+        { salary: { $gt: 60000 } }
+    ]
+})
+
+EXPECTED OUTPUT:
+[
+    { empId: 5, name: "Elan",  dept: "IT",      salary: 72000, city: "Chennai" },
+    { empId: 7, name: "Gopal", dept: "Finance", salary: 61000, city: "Chennai" }
+]
+
+
+STEP 5 – Find employees who are from Mumbai or Delhi using $or
+
+db.employees.find({
+    $or: [
+        { city: "Mumbai" },
+        { city: "Delhi" }
+    ]
+})
+
+EXPECTED OUTPUT:
+[
+    { empId: 4, name: "Deepa", dept: "Finance", salary: 50000, city: "Mumbai" },
+    { empId: 6, name: "Farah", dept: "HR",      salary: 45000, city: "Delhi" }
+]
+
+
+STEP 6 – Find employees who are not in the HR department using $ne
+
+db.employees.find({ dept: { $ne: "HR" } })
+
+EXPECTED OUTPUT:
+[
+    { empId: 2, name: "Bala",   dept: "IT",      salary: 65000, city: "Bengaluru" },
+    { empId: 3, name: "Charan", dept: "IT",      salary: 58000, city: "Chennai" },
+    { empId: 4, name: "Deepa",  dept: "Finance", salary: 50000, city: "Mumbai" },
+    { empId: 5, name: "Elan",   dept: "IT",      salary: 72000, city: "Chennai" },
+    { empId: 7, name: "Gopal",  dept: "Finance", salary: 61000, city: "Chennai" },
+    { empId: 8, name: "Hema",   dept: "Sales",   salary: 38000, city: "Hyderabad" }
+]
+
+
+STEP 7 – Find employees whose names end with 'a' using $regex
+
+db.employees.find({ name: { $regex: "a$" } })
+
+EXPECTED OUTPUT:
+[
+    { empId: 1, name: "Anita", dept: "HR", salary: 42000, city: "Chennai" },
+    { empId: 4, name: "Deepa", dept: "Finance", salary: 50000, city: "Mumbai" },
+    { empId: 6, name: "Farah", dept: "HR", salary: 45000, city: "Delhi" },
+    { empId: 8, name: "Hema",  dept: "Sales", salary: 38000, city: "Hyderabad" }
+]
+
+
+STEP 8 – Display employee names and salaries in ascending salary order
+
+db.employees.find(
+    {},
+    { _id: 0, name: 1, salary: 1 }
+).sort({ salary: 1 })
+
+EXPECTED OUTPUT:
+[
+    { name: "Hema",   salary: 38000 },
+    { name: "Anita",  salary: 42000 },
+    { name: "Farah",  salary: 45000 },
+    { name: "Deepa",  salary: 50000 },
+    { name: "Charan", salary: 58000 },
+    { name: "Gopal",  salary: 61000 },
+    { name: "Bala",   salary: 65000 },
+    { name: "Elan",   salary: 72000 }
+]
+
+
+STEP 9 – Display the three lowest-paid employees using sort() and limit()
+
+db.employees.find(
+    {},
+    { _id: 0, name: 1, salary: 1 }
+).sort({ salary: 1 }).limit(3)
+
+EXPECTED OUTPUT:
+[
+    { name: "Hema",  salary: 38000 },
+    { name: "Anita", salary: 42000 },
+    { name: "Farah", salary: 45000 }
+]
+
+
+STEP 10 – Display only the first four employees after sorting by employee ID
+
+db.employees.find(
+    {},
+    { _id: 0, empId: 1, name: 1, dept: 1 }
+).sort({ empId: 1 }).limit(4)
+
+EXPECTED OUTPUT:
+[
+    { empId: 1, name: "Anita",  dept: "HR" },
+    { empId: 2, name: "Bala",   dept: "IT" },
+    { empId: 3, name: "Charan", dept: "IT" },
+    { empId: 4, name: "Deepa",  dept: "Finance" }
+]
+
+
+STEP 11 – Skip the first five employees and display the remaining employees
+          by employee ID
+
+db.employees.find(
+    {},
+    { _id: 0, empId: 1, name: 1 }
+).sort({ empId: 1 }).skip(5)
+
+EXPECTED OUTPUT:
+[
+    { empId: 6, name: "Farah" },
+    { empId: 7, name: "Gopal" },
+    { empId: 8, name: "Hema" }
+]
+
+
+STEP 12 – Count the total number of employees
+
+db.employees.countDocuments()
+
+EXPECTED OUTPUT:
+8
+
+
+END OF ADDITIONAL PRACTICE QUERIES
+==================================
